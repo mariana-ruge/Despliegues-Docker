@@ -1,10 +1,11 @@
 name: Docker Tests
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  push:          # Se ejecuta en cada push
+    branches: [ "*" ]
+  pull_request:  # Se ejecuta en cada PR
+    branches: [ "*" ]
+  workflow_dispatch: # Permite ejecutarlo manualmente desde GitHub Actions
 
 jobs:
   build-and-test:
@@ -38,5 +39,6 @@ jobs:
             echo "🚀 Ejecutando contenedor de $tag ..."
             docker run --rm $tag echo "✅ Imagen $dir funciona correctamente"
           done
+
 
 
