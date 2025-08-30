@@ -1,0 +1,25 @@
+FROM nginx:1.21.6
+
+
+#Actualizar los repositorios
+RUN apt-get update && apt-get -y upgrade
+
+#Crear un argumento
+ARG CACHEBUST=1 
+
+
+#Crear un archivo html básico y correlo dentro de ngnix
+RUN echo '\
+<!doctype html> \
+<html lang="es"> \
+<head> \
+  <meta charset="utf-8" /> \
+  <meta name="viewport" content="width=device-width, initial-scale=1" /> \
+  <title>Hola desde Dockerfile + Nginx</title> \
+  <style> body { font-family: Arial, sans-serif; text-align: center; margin-top: 5rem; } h1 { color: #0078D7; } </style> \
+</head> \
+<body> \
+  <h1>¡Página generada en el RUN del Dockerfile! 🚀</h1> \
+  <p>No tuve que copiar ningún archivo desde el host.</p> \
+</body> \
+</html>' \ > /usr/share/nginx/html/index.html

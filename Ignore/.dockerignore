@@ -1,0 +1,26 @@
+# Ignorar archivos de Git
+.git
+.gitignore
+
+# Archivos temporales / del sistema
+*.swp
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Entornos virtuales de Python
+venv/
+.env/
+__pycache__/
+*.pyc
+
+# Node.js (si usas npm o yarn)
+node_modules/
+
+# Archivos de dependencias locales
+*.egg-info
+
+# Docker
+Dockerfile
+.dockerignore
