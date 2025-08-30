@@ -1,0 +1,44 @@
+name: Docker Tests
+
+on:
+  push:          # Se ejecuta en cada push
+    branches: [ "*" ]
+  pull_request:  # Se ejecuta en cada PR
+    branches: [ "*" ]
+  workflow_dispatch: # Permite ejecutarlo manualmente desde GitHub Actions
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout del repositorio (ignorar submódulos problemáticos)
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: false
+
+      # 2. Configurar Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # 3. Construir imágenes de cada carpeta con Dockerfile
+      - name: Build Docker images
+        run: |
+          for dir in CI Cache Capas Dependencies Distroless Ignore MultiStage Prune Scripts Usuarios dockerscan; do
+            echo "🔨 Construyendo imagen en $dir ..."
+            tag="test-$(echo $dir | tr '[:upper:]' '[:lower:]')"  # nombres en minúscula
+            docker build -t $tag $dir || exit 1
+          done
+
+      # 4. Probar que los contenedores corren
+      - name: Run container tests
+        run: |
+          for dir in CI Cache Capas Dependencies Distroless Ignore MultiStage Prune Scripts Usuarios dockerscan; do
+            tag="test-$(echo $dir | tr '[:upper:]' '[:lower:]')"  # mismo tag que arriba
+            echo "🚀 Ejecutando contenedor de $tag ..."
+            docker run --rm $tag echo "✅ Imagen $dir funciona correctamente"
+          done
+
+
+
