@@ -42,3 +42,4 @@ jobs:
               docker run --rm test-$img_name echo "✅ Imagen $dir funciona correctamente"
             fi
           done
+
