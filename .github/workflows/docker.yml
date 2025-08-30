@@ -2,24 +2,23 @@ name: Docker Tests
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - '**'
   pull_request:
-    branches: [ main ]
+    branches:
+      - '**'
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout del repositorio
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Configurar Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # 3. Construir imágenes de cada carpeta
       - name: Build Docker images
         run: |
           for dir in CI Cache Capas Dependencies Distroless Ignore MultiStage Prune Scripts Usuarios dockerscan; do
@@ -32,7 +31,6 @@ jobs:
             fi
           done
 
-      # 4. Ejecutar pruebas sobre los contenedores
       - name: Run container tests
         run: |
           for dir in CI Cache Capas Dependencies Distroless Ignore MultiStage Prune Scripts Usuarios dockerscan; do
