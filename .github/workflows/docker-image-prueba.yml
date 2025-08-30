@@ -1,0 +1,39 @@
+name: Docker Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and Test Docker images
+        run: |
+          for dockerfile in $(find . -name "Dockerfile"); do
+            dir=$(dirname "$dockerfile")
+            tag="test-$(basename $dir | tr '[:upper:]' '[:lower:]')"
+            echo "🔨 Construyendo imagen $tag desde $dockerfile ..."
+            docker build "$dir" -f "$dockerfile" -t "$tag"
+
+            echo "🚀 Ejecutando contenedor $tag ..."
+            docker run -d --name $tag -p 8080:80 $tag
+            sleep 5
+
+            echo "🔍 Probando $tag ..."
+            curl -s http://localhost:8080 || (echo "❌ Falló la prueba para $tag" && exit 1)
+
+            echo "✅ Imagen $tag funciona correctamente"
+            docker rm -f $tag
+          done
