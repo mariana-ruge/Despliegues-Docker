@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  web:
+    image: nginx:latest
+    container_name: mi-web
+    ports:
+      - "8080:80"   # http://localhost:8080
+    volumes:
+      - ./html:/usr/share/nginx/html:ro  # Monta tu carpeta html dentro de Nginx (solo lectura)

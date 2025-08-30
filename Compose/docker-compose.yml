@@ -1,0 +1,26 @@
+services:
+  web:
+    build: ./web                # Construye la imagen usando el Dockerfile dentro de /web
+    container_name: compose-flask-web
+    ports:
+      - "${WEB_PORT:-5000}:5000"   # Mapea puerto local -> contenedor
+    environment:
+      FLASK_ENV: development
+      FLASK_DEBUG: 1
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+    volumes:
+      - ./web:/app               # Monta carpeta local dentro del contenedor (hot reload)
+    depends_on:
+      - redis                    # Asegura que redis arranque antes de web
+
+  redis:
+    image: redis:7-alpine        # Usa imagen oficial de Redis
+    container_name: compose-redis
+    ports:
+      - "6379:6379"              # Exponer Redis (opcional)
+    volumes:
+      - redis-data:/data         # Persistir datos en volumen
+
+volumes:
+  redis-data:                    # Definición del volumen

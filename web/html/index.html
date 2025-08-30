@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Web con Docker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🚀 Bienvenido a mi página con Docker + Nginx</h1>
+    <nav>
+      <ul>
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="inicio" class="section">
+    <h2>Inicio</h2>
+    <p>Esta página está corriendo dentro de un contenedor de <strong>Nginx</strong> gracias a <strong>Docker Compose</strong>.</p>
+  </section>
+
+  <section id="servicios" class="section">
+    <h2>Servicios</h2>
+    <ul>
+      <li>Diseño web moderno</li>
+      <li>Despliegue con Docker</li>
+      <li>Automatización con CI/CD</li>
+    </ul>
+  </section>
+
+  <section id="contacto" class="section">
+    <h2>Contacto</h2>
+    <form onsubmit="return sendMessage(event)">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" required>
+
+      <label for="mensaje">Mensaje:</label>
+      <textarea id="mensaje" required></textarea>
+
+      <button type="submit">Enviar</button>
+    </form>
+    <p id="respuesta"></p>
+  </section>
+
+  <footer>
+    <p>© 2025 Mi Web con Docker. Todos los derechos reservados.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
