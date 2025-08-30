@@ -2,42 +2,41 @@ name: Docker Tests
 
 on:
   push:
-    branches:
-      - '**'
+    branches: [ main ]
   pull_request:
-    branches:
-      - '**'
+    branches: [ main ]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout del repositorio (ignorar submódulos problemáticos)
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          submodules: false
 
+      # 2. Configurar Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      # 3. Construir imágenes de cada carpeta con Dockerfile
       - name: Build Docker images
         run: |
           for dir in CI Cache Capas Dependencies Distroless Ignore MultiStage Prune Scripts Usuarios dockerscan; do
-            if [ -f "$dir/Dockerfile" ]; then
-              img_name=$(echo "$dir" | tr '[:upper:]' '[:lower:]')
-              echo "🔨 Construyendo imagen en $dir como test-$img_name ..."
-              docker build -t test-$img_name $dir || exit 1
-            else
-              echo "⚠️ No se encontró Dockerfile en $dir, saltando..."
-            fi
+            echo "🔨 Construyendo imagen en $dir ..."
+            tag="test-$(echo $dir | tr '[:upper:]' '[:lower:]')"  # nombres en minúscula
+            docker build -t $tag $dir || exit 1
           done
 
+      # 4. Probar que los contenedores corren
       - name: Run container tests
         run: |
           for dir in CI Cache Capas Dependencies Distroless Ignore MultiStage Prune Scripts Usuarios dockerscan; do
-            if [ -f "$dir/Dockerfile" ]; then
-              img_name=$(echo "$dir" | tr '[:upper:]' '[:lower:]')
-              echo "🚀 Ejecutando contenedor test-$img_name ..."
-              docker run --rm test-$img_name echo "✅ Imagen $dir funciona correctamente"
-            fi
+            tag="test-$(echo $dir | tr '[:upper:]' '[:lower:]')"  # mismo tag que arriba
+            echo "🚀 Ejecutando contenedor de $tag ..."
+            docker run --rm $tag echo "✅ Imagen $dir funciona correctamente"
           done
+
 
